@@ -6,49 +6,32 @@ const ProposalSchema = new mongoose.Schema({
     ref: "NGO",
     required: true,
   },
-  title: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  description: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  requestedAmount: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
+  title: { type: String, required: true, trim: true },
+  description: { type: String, required: true, trim: true },
+  requestedAmount: { type: Number, required: true, min: 0 },
   status: {
     type: String,
     enum: ["Pending", "Approved", "Rejected", "Partially Funded"],
     default: "Pending",
   },
+  disaster: { type: mongoose.Schema.Types.ObjectId, ref: "Disaster", required: true },
   milestones: [
     {
-      milestoneId: Number,
+      milestoneId: { type: Number, required: true },
       description: { type: String, required: true },
       amount: { type: Number, required: true, min: 0 },
-      fundsAllocated: Number,
+      fundsAllocated: { type: Number, default: 0 },
       fundsReleased: { type: Boolean, default: false },
-      isCompleted: {
-        type: Boolean,
-        default: false,
-      },
+      isCompleted: { type: Boolean, default: false },
     },
   ],
-  deadline: {
-    type: Date, // Proposal expiration or evaluation deadline
-  },
-  fundingSource: {
-    type: String, // Internal or external funding source
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  aidRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "AidRequest" }],
+  breakdown: { type: String, required: true },
+  deadline: { type: Date }, // Expiry date for proposal
+  fundingSource: { type: String, trim: true },
+  blockchainHash: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date },
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
     refPath: "modifierModel",
@@ -56,10 +39,7 @@ const ProposalSchema = new mongoose.Schema({
   modifierModel: {
     type: String,
     required: true,
-    enum: ["Donor", "Beneficiary"], 
-  },
-  updatedAt: {
-    type: Date,
+    enum: ["Donor", "Beneficiary"],
   },
 });
 

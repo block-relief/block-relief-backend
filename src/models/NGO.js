@@ -3,34 +3,15 @@ const mongoose = require("mongoose");
 const NGOSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  name: {
-    type: String,
+    ref: 'User',
     required: true,
-    trim: true,
+    unique: true, // Ensures one-to-one mapping
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  registrationNumber: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    trim: true,
-  },
-  country: {
-    type: String,
-    required: true,
-  },
+  name: { type: String, required: true, trim: true },
+  registrationNumber: { type: String, required: true, unique: true },
+  phone: { type: String, required: true },
+  address: { type: String, trim: true },
+  country: { type: String, required: true },
   contactPerson: {
     name: { type: String, required: true },
     phone: { type: String, required: true },
@@ -41,28 +22,20 @@ const NGOSchema = new mongoose.Schema({
     enum: ["Pending", "Verified", "Rejected"],
     default: "Pending",
   },
-  logo: {
-    type: String, 
-  },
-  proposals: [
+  verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
+  logo: { type: String }, // Store URL or IPFS CID
+  proposals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Proposal" }],
+  disasterZones: [{ type: mongoose.Schema.Types.ObjectId, ref: "Disaster" }], // Could be refined as an array of { region, country }
+  documents: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Proposal",
+      name: { type: String, required: true },
+      ipfsCID: { type: String, required: true }, // IPFS CID for storage
+      uploadedAt: { type: Date, default: Date.now },
     },
   ],
-  disasterZones: [{ type: String }],
-  documents: [{ // IPFS CIDs of uploaded docs (tax certs, audits)
-    name: String,
-    ipfsCID: String,
-    uploadedAt: Date
-  }],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-  },
+  walletAddress: { type: String, unique: true },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date },
 });
 
 module.exports = mongoose.model("NGO", NGOSchema);

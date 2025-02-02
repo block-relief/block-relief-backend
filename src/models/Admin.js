@@ -3,16 +3,11 @@ const mongoose = require("mongoose");
 const AdminSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true, 
+    unique: true, // Ensures one-to-one mapping
   },
-  passwordHash: {
-    type: String, 
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  createdAt: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model("Admin", AdminSchema);
