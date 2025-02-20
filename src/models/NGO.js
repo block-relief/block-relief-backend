@@ -25,11 +25,11 @@ const NGOSchema = new mongoose.Schema({
   verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
   logo: { type: String }, // Store URL or IPFS CID
   proposals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Proposal" }],
-  disasterZones: [{ type: mongoose.Schema.Types.ObjectId, ref: "Disaster" }], // Could be refined as an array of { region, country }
+  disasterZones: [{ type: mongoose.Schema.Types.ObjectId, ref: "Disaster" }],
   documents: [
     {
       name: { type: String, required: true },
-      ipfsCID: { type: String, required: true }, // IPFS CID for storage
+      ipfsCID: { type: String, required: true }, 
       uploadedAt: { type: Date, default: Date.now },
     },
   ],
