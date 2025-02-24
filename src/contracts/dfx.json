@@ -1,0 +1,22 @@
+{
+  "canisters": {
+    "escrow": {
+      "main": "src/escrow/Escrow.mo",
+      "type": "motoko",
+      "canister_id": "bkyz2-fmaaa-aaaaa-qaaaq-cai"
+    },
+    "verification": {
+      "main": "src/verification/Verification.mo",
+      "type": "motoko",
+      "canister_id": "bd3sg-teaaa-aaaaa-qaaba-cai"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}

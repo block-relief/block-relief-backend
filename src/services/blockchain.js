@@ -1,11 +1,16 @@
 const { HttpAgent, Actor } = require("@dfinity/agent");
-const { idlFactory: VerificationIDL } = require("../contracts/Verification.did");
-const { idlFactory: EscrowIDL } = require("../contracts/Escrow.did");
+const { idlFactory: VerificationIDL } = require("../contracts/src/declarations/verification/verification.did.js");
+const { idlFactory: EscrowIDL } = require("../contracts/src/declarations/escrow/escrow.did.js");
+const dotenv = require('dotenv')
 
-const VERIFICATION_CANISTER_ID = "your-verification-canister-id";
-const ESCROW_CANISTER_ID = "your-escrow-canister-id";
+dotenv.config()
 
-const agent = new HttpAgent({ host: "https://ic0.app" });
+const VERIFICATION_CANISTER_ID = process.env.VERIFICATION_CANISTER_ID;
+const ESCROW_CANISTER_ID = process.env.ESCROW_CANISTER_ID;
+
+const agent = new HttpAgent({ host: "http://127.0.0.1:4943" });
+// Fetch root key for local replica (remove this line when deploying to mainnet)
+agent.fetchRootKey().catch(err => console.error("Error fetching root key:", err));
 
 // Create actor instances for smart contract interaction
 const VerificationActor = Actor.createActor(VerificationIDL, {
@@ -19,7 +24,6 @@ const EscrowActor = Actor.createActor(EscrowIDL, {
 });
 
 class BlockchainService {
-  
   async verifyNGO(ngoId) {
     try {
       return await VerificationActor.verifyNGO(ngoId);

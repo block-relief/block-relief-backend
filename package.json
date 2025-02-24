@@ -10,8 +10,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@dfinity/agent": "^2.2.0",
-    "@dfinity/candid": "^2.2.0",
+    "@dfinity/agent": "^2.3.0",
+    "@dfinity/candid": "^2.3.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
