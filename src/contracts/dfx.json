@@ -9,6 +9,16 @@
       "main": "src/verification/Verification.mo",
       "type": "motoko",
       "canister_id": "bd3sg-teaaa-aaaaa-qaaba-cai"
+    },
+    "funding": {
+      "main": "src/funding/Funding.mo",
+      "type": "motoko",
+      "canister_id": "br5f7-7uaaa-aaaaa-qaaca-cai"
+    },
+    "disaster": {
+      "main": "src/disaster/Disaster.mo",
+      "type": "motoko",
+      "canister_id": "bw4dl-smaaa-aaaaa-qaacq-cai"
     }
   },
   "defaults": {
