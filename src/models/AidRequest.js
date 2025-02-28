@@ -4,7 +4,6 @@ const AidRequestSchema = new mongoose.Schema({
   beneficiary: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Beneficiary",
-    required: true,
   },
   requestedBy: {
     type: mongoose.Schema.Types.ObjectId,

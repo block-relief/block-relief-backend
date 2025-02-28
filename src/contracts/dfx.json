@@ -19,6 +19,11 @@
       "main": "src/disaster/Disaster.mo",
       "type": "motoko",
       "canister_id": "bw4dl-smaaa-aaaaa-qaacq-cai"
+    },
+    "user": {
+      "main": "src/user/UserRegistry.mo",
+      "type": "motoko",
+      "canister_id": "b77ix-eeaaa-aaaaa-qaada-cai"
     }
   },
   "defaults": {

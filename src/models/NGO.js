@@ -1,13 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const NGOSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    unique: true, // Ensures one-to-one mapping
+    unique: true
   },
-  name: { type: String, required: true, trim: true },
   registrationNumber: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
   address: { type: String, trim: true },
@@ -15,27 +14,20 @@ const NGOSchema = new mongoose.Schema({
   contactPerson: {
     name: { type: String, required: true },
     phone: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true }
   },
-  verificationStatus: {
-    type: String,
-    enum: ["Pending", "Verified", "Rejected"],
-    default: "Pending",
-  },
-  verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "Admin" },
-  logo: { type: String }, // Store URL or IPFS CID
+  logo: { type: String }, // IPFS CID
   proposals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Proposal" }],
   disasterZones: [{ type: mongoose.Schema.Types.ObjectId, ref: "Disaster" }],
   documents: [
     {
-      name: { type: String, required: true },
-      ipfsCID: { type: String, required: true }, 
-      uploadedAt: { type: Date, default: Date.now },
-    },
+      name: { type: String, required: true, enum: ["registration", "tax_cert", "proof_of_op"] }, // Controlled names
+      ipfsCID: { type: String, required: true },
+      uploadedAt: { type: Date, default: Date.now }
+    }
   ],
-  walletAddress: { type: String, unique: true },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date },
+  updatedAt: { type: Date }
 });
 
-module.exports = mongoose.model("NGO", NGOSchema);
+module.exports = mongoose.model('NGO', NGOSchema)
