@@ -1,10 +1,10 @@
 const User = require("../models/User");
 const blockchainService = require("./blockchain");
 
-async function verifyUser(userHash, role) {
+async function verifyUser(adminHash, userHash, role) {
   try {
     // Verify on blockchain
-    const blockchainResult = await blockchainService.verifyUser(userHash, role);
+    const blockchainResult = await blockchainService.verifyUser(adminHash, userHash, role);
     if (!blockchainResult) {
       throw new Error("Failed to verify user on blockchain");
     }

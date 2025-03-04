@@ -1,6 +1,6 @@
 const { HttpAgent, Actor } = require("@dfinity/agent");
 const { Ed25519KeyIdentity } = require("@dfinity/identity")
-const { idlFactory: UserRegistryIDL } = require("../contracts/src/declarations/user/user.did.js");
+const { idlFactory: UserRegistryIDL } = require("../declarations/user/user.did.js");
 const fs = require('fs');
 const dotenv = require("dotenv");
 

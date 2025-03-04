@@ -46,25 +46,24 @@ actor UserRegistry {
     true
   };
 
-  // Verify a user and assign their final role (restricted to Admins)
-  public shared ({caller}) func verifyUser(userHash : UserHash, role : UserRole) : async Bool {
-    switch (users.get(Principal.toText(caller))) {
+  public shared ({caller}) func verifyUser(adminHash : UserHash, userHash : UserHash, role : UserRole) : async Bool {
+    switch (users.get(adminHash)) {
       case (?#Admin) {
         switch (users.get(userHash)) {
           case (?#Pending) {
             users.put(userHash, role);
             Debug.print("User verified: " # userHash # " as " # debug_show(role) # " by " # Principal.toText(caller));
-            true
+            return true;
           };
           case _ {
             Debug.print("User " # userHash # " not pending or already verified");
-            false
+            return false;
           };
         }
       };
       case _ {
-        Debug.print("Unauthorized caller: " # Principal.toText(caller));
-        false
+        Debug.print("Unauthorized caller with adminHash: " # adminHash);
+        return false;
       };
     }
   };

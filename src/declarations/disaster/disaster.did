@@ -1,0 +1,25 @@
+type DisasterStatus = 
+ variant {
+   Assessed;
+   Reported;
+   Resolved;
+   Verified;
+ };
+type DisasterRecord = 
+ record {
+   description: text;
+   disasterId: text;
+   estimatedDamageCost: float64;
+   location: text;
+   reporter: text;
+   status: DisasterStatus;
+ };
+service : {
+  getAllDisasters: () -> (vec record {
+                                text;
+                                DisasterRecord;
+                              }) query;
+  getDisaster: (text) -> (opt DisasterRecord) query;
+  reportDisaster: (text, text, text, float64, text) -> (bool);
+  updateDisasterStatus: (text, DisasterStatus) -> (bool);
+}

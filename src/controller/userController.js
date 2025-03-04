@@ -1,7 +1,7 @@
 const { verifyUser } = require("../services/userService");
 
 async function verifyUserController(req, res) {
-  const { userHash, role } = req.body;
+  const { adminHash, userHash, role } = req.body;
 
   try {
     // Ensure only admin can call this (assuming JWT middleware checks role)
@@ -9,7 +9,7 @@ async function verifyUserController(req, res) {
       return res.status(403).json({ error: "Unauthorized: Admin access required" });
     }
 
-    const result = await verifyUser(userHash, role);
+    const result = await verifyUser(adminHash, userHash, role);
     res.status(200).json(result);
   } catch (error) {
     res.status(400).json({ error: error.message });

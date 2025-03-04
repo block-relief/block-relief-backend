@@ -1,0 +1,21 @@
+type UserRole = 
+ variant {
+   Admin;
+   Beneficiary;
+   Donor;
+   NGO;
+   Pending;
+ };
+type UserHash = text;
+service : {
+  addUser: (UserHash, UserRole) -> (bool);
+  bootstrapInitialAdmin: (UserHash) -> (bool);
+  getUserRole: (UserHash) -> (opt UserRole) query;
+  listUsers: () -> (vec record {
+                          UserHash;
+                          UserRole;
+                        }) query;
+  listVerifiedBeneficiaries: () -> (vec UserHash) query;
+  listVerifiedNGOs: () -> (vec UserHash) query;
+  verifyUser: (UserHash, UserHash, UserRole) -> (bool);
+}

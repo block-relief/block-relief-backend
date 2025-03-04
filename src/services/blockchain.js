@@ -2,13 +2,14 @@ const { HttpAgent, Actor } = require("@dfinity/agent");
 const {Ed25519KeyIdentity } = require("@dfinity/identity");
 
 // const { idlFactory: VerificationIDL } = require("../contracts/src/declarations/verification/verification.did.js");
-const { idlFactory: EscrowIDL } = require("../contracts/src/declarations/escrow/escrow.did.js");
-const { idlFactory: FundingIDL } = require("../contracts/src/declarations/funding/funding.did.js");
-const { idlFactory: DisasterIDL } = require("../contracts/src/declarations/disaster/disaster.did.js");
-const { idlFactory: UserRegistryIDL } = require("../contracts/src/declarations/user/user.did.js");
+const { idlFactory: EscrowIDL } = require("../declarations/escrow/escrow.did.js");
+const { idlFactory: FundingIDL } = require("../declarations/funding/funding.did.js");
+const { idlFactory: DisasterIDL } = require("../declarations/disaster/disaster.did.js");
+const { idlFactory: UserRegistryIDL } = require("../declarations/user/user.did.js");
 const fs = require('fs');
 const path = require('path');
 const dotenv = require("dotenv");
+const { mapRoleToBlockchain } = require('../utils/mapRoles.js')
 
 dotenv.config();
 
@@ -134,11 +135,13 @@ class BlockchainService {
     }
   }
 
-  async verifyUser(userHash, role) {
+
+  async verifyUser(adminHash, userHash, role) {
     try {
-      const roleVariant = { [role]: null };
-      const result = await UserActor.verifyUser(userHash, roleVariant);
-      return result;
+      const mappedRole = mapRoleToBlockchain(role.toLowerCase());
+      const roleVariant = { [mappedRole]: null };
+
+      return await UserActor.verifyUser(adminHash, userHash, roleVariant);
     } catch (error) {
       console.error("Error verifying user:", error);
       return false;

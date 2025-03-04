@@ -1,0 +1,22 @@
+type Proposal = 
+ record {
+   isCompleted: bool;
+   milestones: vec Milestone;
+   ngoId: text;
+   proposalId: text;
+   totalAmount: float64;
+ };
+type Milestone = 
+ record {
+   amount: float64;
+   isReleased: bool;
+   milestoneId: nat;
+ };
+service : {
+  createProposal: (text, text, float64, vec Milestone) -> (bool);
+  getProposal: (text) -> (opt Proposal) query;
+  listAllProposals: () -> (vec text) query;
+  markProposalCompleted: (text) -> (bool);
+  releaseFunds: (text, nat) -> (bool);
+  withdrawRemainingFunds: (text) -> (opt float64);
+}

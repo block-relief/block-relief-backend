@@ -1,27 +1,27 @@
 {
   "canisters": {
     "escrow": {
-      "main": "src/escrow/Escrow.mo",
+      "main": "src/contracts/src/escrow/Escrow.mo",
       "type": "motoko",
       "canister_id": "bkyz2-fmaaa-aaaaa-qaaaq-cai"
     },
     "verification": {
-      "main": "src/verification/Verification.mo",
+      "main": "src/contracts/src/verification/Verification.mo",
       "type": "motoko",
       "canister_id": "bd3sg-teaaa-aaaaa-qaaba-cai"
     },
     "funding": {
-      "main": "src/funding/Funding.mo",
+      "main": "src/contracts/src/funding/Funding.mo",
       "type": "motoko",
       "canister_id": "br5f7-7uaaa-aaaaa-qaaca-cai"
     },
     "disaster": {
-      "main": "src/disaster/Disaster.mo",
+      "main": "src/contracts/src/disaster/Disaster.mo",
       "type": "motoko",
       "canister_id": "bw4dl-smaaa-aaaaa-qaacq-cai"
     },
     "user": {
-      "main": "src/user/UserRegistry.mo",
+      "main": "src/contracts/src/user/UserRegistry.mo",
       "type": "motoko",
       "canister_id": "b77ix-eeaaa-aaaaa-qaada-cai"
     }

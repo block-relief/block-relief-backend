@@ -1,0 +1,4 @@
+service : {
+  approveAid: (text) -> (bool);
+  requestAid: (text, text, float64) -> (bool);
+}
