@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     enum: ['donor', 'ngo', 'beneficiary', 'auditor', 'admin'], 
     required: true 
   }],
-  linkedProfile: { 
+  linkedProfile : { 
     type: mongoose.Schema.Types.ObjectId, 
     refPath: 'roles' // Dynamically links to the correct model based on role
   },
