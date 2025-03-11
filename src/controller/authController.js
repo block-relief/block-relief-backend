@@ -54,7 +54,7 @@ async function registerUserController(req, res) {
             userData = {
               name: user.profile.name,
               email: user.email || null,
-              role: user.roles[0]
+              roles: user.roles
             }
           }
         } catch (err) {
