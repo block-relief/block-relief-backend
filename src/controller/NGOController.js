@@ -1,21 +1,17 @@
-const { registerNGO, submitNGODocs, getNGODocs, listVerifiedNGOs } = require("../services/ngoService");
+const { submitNGODocs, getNGODocs, listVerifiedNGOs } = require("../services/ngoService");
 
-async function registerNGOController(req, res) {
-  const { email, password, name, registrationNumber, phone, address, country, contactPerson } = req.body;
-
-  try {
-    const result = await registerNGO(email, password, name, registrationNumber, phone, address, country, contactPerson);
-    res.status(201).json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
 
 async function submitNGODocsController(req, res) {
   const { userHash } = req.body;
-  const files = req.files; // From Multer
+  const files = req.files; 
+
+
+  if (!files || files.length === 0) {
+    return res.status(400).json({ error: "No files uploaded" });
+  }
 
   try {
+
     const result = await submitNGODocs(userHash, files);
     res.status(200).json(result);
   } catch (error) {
@@ -43,4 +39,4 @@ async function listVerifiedNGOsController(req, res) {
   }
 }
 
-module.exports = { registerNGOController, submitNGODocsController, getNGODocsController, listVerifiedNGOsController };
+module.exports = { submitNGODocsController, getNGODocsController, listVerifiedNGOsController };

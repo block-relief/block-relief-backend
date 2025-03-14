@@ -19,6 +19,12 @@ class ENVs {
   CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY
   HASH_SALT = process.env.HASH_SALT
   USER_CANISTER_ID = process.env.USER_CANISTER_ID
+  IPFS_API_SECRET = process.env.IPFS_API_SECRET
+  IPFS_API_KEY = process.env.IPFS_API_KEY
+  PINATA_JWT = process.env.PINATA_JWT
+  CLOUD_NAME = process.env.CLOUD_NAME;
+  CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET
+  CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY
 }
 
 const config = new ENVs();

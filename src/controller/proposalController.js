@@ -4,7 +4,8 @@ exports.createProposal = async (req, res) => {
     try {
         const { ngoId, title, description, requestedAmount, disasterId, milestones, breakdown, fundingSource } = req.body;
         const modifierId = req.user._id;
-        const modifierModel = req.user.role;
+        console.log('logged in user:', req.user)
+        const modifierModel = req.user.roles[0];
 
         const proposal = await proposalService.createProposal(
             ngoId, title, description, requestedAmount, disasterId, milestones, breakdown, fundingSource, modifierId, modifierModel

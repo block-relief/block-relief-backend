@@ -1,5 +1,6 @@
 const Proposal = require("../models/Proposal");
-const BlockchainService = require("../blockchain");
+const BlockchainService = require("./blockchain");
+const { generateToken, createSalt } = require('../utils/generateToken_')
 const mongoose = require("mongoose");
 
 async function createProposal(ngoId, title, description, requestedAmount, disasterId, milestones, breakdown, fundingSource, modifierId, modifierModel) {
@@ -23,9 +24,16 @@ async function createProposal(ngoId, title, description, requestedAmount, disast
 
         const savedProposal = await proposal.save({ session });
 
+        const ngo = await NGO.findById(ngoId).session(session);
+        if (!ngo) {
+            throw new Error("NGO not found");
+        }
+        ngo.proposals.push(savedProposal._id);
+        await ngo.save({ session });
+
         // Call Blockchain Function
         const blockchainResponse = await BlockchainService.createProposal(
-            savedProposal._id.toString(), // Use MongoDB ID as proposalId on the blockchain
+            savedProposal._id.toString(), 
             ngoId,
             requestedAmount,
             milestones
@@ -96,7 +104,7 @@ async function rejectProposal(proposalId, adminId) {
         // Update MongoDB Proposal
         proposal.status = "Rejected";
         proposal.lastModifiedBy = adminId;
-        proposal.modifierModel = "Admin";
+        proposal.modifierModel = "admin";
 
         // Call Blockchain Function (if applicable)
         const blockchainResponse = await BlockchainService.withdrawRemainingFunds(proposalId);

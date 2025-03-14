@@ -1,21 +1,12 @@
 const express = require("express");
-const router = express.Router();
-const proposalController = require("../controllers/proposalController");
-const { authenticate, authorize } = require("../middleware/authMiddleware");
+const proposalRouter = express.Router();
+const proposalController = require("../controller/proposalController");
+const authenticate = require("../middleware/jwt");
 
-// Create Proposal (Only NGOs)
-router.post("/", authenticate, authorize(["ngo"]), proposalController.createProposal);
+proposalRouter.post("/",  authenticate(["ngo"]), proposalController.createProposal);
+proposalRouter.put("/:proposalId/approve", authenticate(['admin']), proposalController.approveProposal);
+proposalRouter.put("/:proposalId/reject", authenticate(["admin"]), proposalController.rejectProposal);
+proposalRouter.get("/", authenticate(['admin']), proposalController.listAllProposals);
+proposalRouter.get("/:proposalId", proposalController.getProposal);
 
-// Approve Proposal (Admin only)
-router.put("/:proposalId/approve", authenticate, authorize(["admin"]), proposalController.approveProposal);
-
-// Reject Proposal (Admin only)
-router.put("/:proposalId/reject", authenticate, authorize(["admin"]), proposalController.rejectProposal);
-
-// Get all proposals
-router.get("/", authenticate, proposalController.listAllProposals);
-
-// Get a specific proposal
-router.get("/:proposalId", authenticate, proposalController.getProposal);
-
-module.exports = router;
+module.exports = proposalRouter;

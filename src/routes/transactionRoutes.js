@@ -1,16 +1,12 @@
 const express = require("express");
-const transactionController = require("../controllers/transactionController");
-const authenticate = require("../middleware/authenticate"); // Optional: Add authentication middleware
+const transactionController = require("../controller/transactionController");
+const authenticate = require("../middleware/jwt");
 
-const router = express.Router();
+const transactionRouter = express.Router();
 
-// Donate to a Proposal
-router.post("/donate", authenticate, transactionController.donateToProposal);
+transactionRouter.post("/donate-to-proposal", transactionController.createDonation);
+transactionRouter.post("/donate-to-disaster", transactionController.donateToDisaster)
+transactionRouter.post("/release-funds", authenticate(['admin']), transactionController.releaseFunds);
+transactionRouter.get("/", authenticate(['admin', 'donor']), transactionController.listTransactions);
 
-// Release Funds for a Milestone
-router.post("/release-funds", authenticate, transactionController.releaseFunds);
-
-// List All Transactions
-router.get("/", authenticate, transactionController.listTransactions);
-
-module.exports = router;
+module.exports = transactionRouter;

@@ -1,4 +1,22 @@
+type DonationStatus = 
+ variant {
+   Failed;
+   Locked;
+   Released;
+ };
+type Donation = 
+ record {
+   amount: float64;
+   disasterId: opt text;
+   donationId: text;
+   donorId: text;
+   proposalId: opt text;
+   status: DonationStatus;
+ };
 service : {
   approveAid: (text) -> (bool);
+  getDonation: (text) -> (opt Donation) query;
   requestAid: (text, text, float64) -> (bool);
+  storeDisasterDonation: (text, text, text, float64) -> (text);
+  storeDonation: (text, text, text, float64) -> (text);
 }

@@ -21,16 +21,17 @@ const ProposalSchema = new mongoose.Schema({
       description: { type: String, required: true },
       amount: { type: Number, required: true, min: 0 },
       fundsAllocated: { type: Number, default: 0 },
-      fundsReleased: { type: Boolean, default: false },
+      isReleased: { type: Boolean, default: false },
       isCompleted: { type: Boolean, default: false },
     },
   ],
   aidRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "AidRequest" }],
   breakdown: { type: String, required: true },
-  deadline: { type: Date }, // Expiry date for proposal
+  deadline: { type: Date }, 
   fundingSource: { type: String, trim: true },
   blockchainHash: { type: String },
   createdAt: { type: Date, default: Date.now },
+  thumbnail: {type: String}, 
   updatedAt: { type: Date },
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -39,7 +40,7 @@ const ProposalSchema = new mongoose.Schema({
   modifierModel: {
     type: String,
     required: true,
-    enum: ["Donor", "Beneficiary"],
+    enum: ["donor", "beneficiary", "ngo"],
   },
 });
 

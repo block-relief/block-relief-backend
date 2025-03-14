@@ -22,7 +22,8 @@ const NGOSchema = new mongoose.Schema({
   documents: [
     {
       name: { type: String, required: true, enum: ["registration", "tax_cert", "proof_of_op"] }, // Controlled names
-      ipfsCID: { type: String, required: true },
+      cloudinaryUrl: { type: String, required: true }, 
+      originalName: { type: String },
       uploadedAt: { type: Date, default: Date.now }
     }
   ],

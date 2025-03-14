@@ -26,7 +26,6 @@ console.log("Loaded admin principal:", adminIdentity.getPrincipal().toText());
 const agent = new HttpAgent({ host: "http://127.0.0.1:4943", identity: adminIdentity });
 agent.fetchRootKey().catch(err => console.error("Error fetching root key:", err));
 
-// Create actor instances
 const EscrowActor = Actor.createActor(EscrowIDL, { agent, canisterId: ESCROW_CANISTER_ID });
 const FundingActor = Actor.createActor(FundingIDL, { agent, canisterId: FUNDING_CANISTER_ID });
 const DisasterActor = Actor.createActor(DisasterIDL, { agent, canisterId: DISASTER_CANISTER_ID });
@@ -97,13 +96,50 @@ class BlockchainService {
     }
   }
 
-  // DISASTER FUNCTIONS
-  async reportDisaster(disasterId, location, severity) {
+  async storeDonation ({ donorId, proposalId, amount, transactionId }) {
     try {
-      return await DisasterActor.reportDisaster(disasterId, location, severity);
+      const result = await FundingActor.storeDonation(
+        transactionId, 
+        donorId,
+        proposalId,
+        parseFloat(amount) 
+      );
+      return result;
     } catch (error) {
-      console.error("Error reporting disaster:", error);
-      return false;
+      console.error("Blockchain error:", error);
+      throw new Error("Failed to store donation on blockchain");
+    }
+  };
+
+  async storeDisasterDonation ({ donorId, disasterId, amound, transactionId }) {
+    try {
+      const result = await FundingActor.storeDisasterDonation(
+        transactionId,
+        donorId,
+        disasterId,
+        parseFloat(amound)
+      );
+      return result
+    } catch (error) {
+      console.error("Blockchain error:", error);
+      throw new Error("Failed to store donation on the blockchain")
+    }
+  }
+
+  // DISASTER FUNCTIONS
+  async reportDisaster(disasterId, description, location, estimatedDamageCost, reporter) {
+    try {
+      const result = await DisasterActor.reportDisaster(
+        disasterId,
+        description,
+        location,
+        parseFloat(estimatedDamageCost),
+        reporter
+      );
+      return result; 
+    } catch (error) {
+      console.error("Blockchain error:", error);
+      throw new Error("Failed to report disaster on blockchain");
     }
   }
 
@@ -117,7 +153,13 @@ class BlockchainService {
   }
 
   async getDisaster(disasterId) {
-    return await DisasterActor.getDisaster(disasterId);
+    try {
+      const result = await DisasterActor.getDisaster(disasterId);
+      return result;
+    } catch (error) {
+      console.error("Blockchain error:", error);
+      throw error;
+    }
   }
 
   async getAllDisasters() {

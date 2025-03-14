@@ -9,7 +9,10 @@ const TransactionSchema = new mongoose.Schema({
   proposal: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Proposal",
-    required: true,
+  },
+  disaster: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Disaster"
   },
   amount: {
     type: Number,
