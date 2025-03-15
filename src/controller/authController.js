@@ -48,15 +48,9 @@ async function registerUserController(req, res) {
         const token = authHeader.split(' ')[1]
         try {
           const decoded = jwt.verify(token, JWT_SECRET)
-          const user = await User.findById(decoded.userId).select('email roles profile.name')
-
-          if (user) {
-            userData = {
-              name: user.profile.name,
-              email: user.email || null,
-              role: user.roles[0]
-            }
-          }
+          userData = await User.findById(decoded.userId)
+          .select('-password')
+          .lean();
         } catch (err) {
           userData = null
         }
