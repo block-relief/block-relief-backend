@@ -19,6 +19,7 @@
     "body-parser": "^1.20.3",
     "buffer": "^6.0.3",
     "cloudinary": "^2.6.0",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
@@ -30,6 +31,8 @@
     "node-fetch": "^2.7.0",
     "nodemon": "^3.1.9",
     "pinata": "^2.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.0.5"
   }
 }

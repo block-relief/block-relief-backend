@@ -1,6 +1,6 @@
 const Disaster = require("../models/Disaster");
 const Proposal = require("../models/Proposal")
-const BlockchainService = require("./blockchain");
+// const BlockchainService = require("./blockchain");
 const mongoose = require("mongoose");
 
 async function reportDisaster({ name, type, location, severity, reportedBy }) {
@@ -19,17 +19,17 @@ async function reportDisaster({ name, type, location, severity, reportedBy }) {
     });
     const savedDisaster = await disaster.save({ session });
 
-    const blockchainResponse = await BlockchainService.reportDisaster(
-      savedDisaster._id.toString(),
-      `${name}: ${type}`, // description
-      `${location.city || ""}, ${location.country || ""}`, // location
-      0.0, // estimatedDamageCost (placeholder for MVP)
-      reportedBy.toString()
-    );
+    // const blockchainResponse = await BlockchainService.reportDisaster(
+    //   savedDisaster._id.toString(),
+    //   `${name}: ${type}`, // description
+    //   `${location.city || ""}, ${location.country || ""}`, // location
+    //   0.0, // estimatedDamageCost (placeholder for MVP)
+    //   reportedBy.toString()
+    // );
 
-    if (!blockchainResponse) {
-      throw new Error("Blockchain disaster report failed");
-    }
+    // if (!blockchainResponse) {
+    //   throw new Error("Blockchain disaster report failed");
+    // }
 
     await session.commitTransaction();
     session.endSession();
@@ -49,8 +49,8 @@ async function listAllDisasters() {
 async function getDisaster(disasterId) {
   const disaster = await Disaster.findById(disasterId).populate("reportedBy");
   if (!disaster) throw new Error("Disaster not found");
-  const blockchainData = await BlockchainService.getDisaster(disasterId);
-  return { ...disaster.toObject(), blockchainData };
+  // const blockchainData = await BlockchainService.getDisaster(disasterId);
+  return { ...disaster.toObject()};
 }
 
 async function getProposalByDisaster(disasterId) {
@@ -61,25 +61,27 @@ async function getProposalByDisaster(disasterId) {
 
   const proposals = await Proposal.find({ disaster: disasterId }).populate("ngo")
 
-  const proposalsWithBlockchainData = await Promise.all(
-    proposals.map(async (proposal) => {
-      const blockchainData = await BlockchainService.getProposal(proposal._id.toString())
+  // const proposalsWithBlockchainData = await Promise.all(
+  //   proposals.map(async (proposal) => {
+  //     const blockchainData = await BlockchainService.getProposal(proposal._id.toString())
 
-      // Convert BigInt values to strings
-      const sanitizedBlockchainData = JSON.parse(
-        JSON.stringify(blockchainData, (key, value) =>
-          typeof value === "bigint" ? value.toString() : value
-      )
-    );
+  //     // Convert BigInt values to strings
+  //     const sanitizedBlockchainData = JSON.parse(
+  //       JSON.stringify(blockchainData, (key, value) =>
+  //         typeof value === "bigint" ? value.toString() : value
+  //     )
+  //   );
 
-      return {
-        ...proposal.toObject(),
-        blockchainData: sanitizedBlockchainData,
-      }
-    })
-  )
+  //     return {
+  //       ...proposal.toObject(),
+  //       blockchainData: sanitizedBlockchainData,
+  //     }
+  //   })
+  // )
 
-  return proposalsWithBlockchainData;
+  // return proposalsWithBlockchainData;
+
+  return proposals
 }
 
 module.exports = { reportDisaster, listAllDisasters, getDisaster, getProposalByDisaster };

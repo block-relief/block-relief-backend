@@ -17,8 +17,7 @@ exports.createDonation = async (req, res) => {
       message: "Donation successful",
       transaction: {
         id: result.transaction._id,
-        reference: result.transaction.reference,
-        transactionHash: result.transactionHash,
+        reference: result.transaction.reference
       },
     });
   } catch (error) {
@@ -44,8 +43,7 @@ exports.donateToDisaster = async (req, res) => {
       message: "Donation successful",
       transaction: {
         id: result.transaction._id,
-        reference: result.transaction.reference,
-        transactionHash: result.transactionHash,
+        reference: result.transaction.reference
       },
     });
   } catch (error) {

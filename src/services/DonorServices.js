@@ -3,7 +3,7 @@ const User = require("../models/User");
 const Donor = require("../models/Donor");
 const { generateToken, createSalt } = require('../utils/generateToken_');
 const { mapRoleToBlockchain } = require('../utils/mapRoles');
-const blockchainService = require('./blockchain');
+// const blockchainService = require('./blockchain');
 
 
 async function registerDonor(email, password, profile, paymentMethods) {
@@ -40,13 +40,13 @@ async function registerDonor(email, password, profile, paymentMethods) {
 
     // Register the user on the blockchain
     const blockchainRole = mapRoleToBlockchain("donor");
-    const blockchainResult = await blockchainService.addUser(userHash, blockchainRole);
+    // const blockchainResult = await blockchainService.addUser(userHash, blockchainRole);
 
-    if (!blockchainResult) {
-        await User.deleteOne({ _id: savedUser._id });
-        await Donor.deleteOne({ _id: savedDonor._id });
-        throw new Error("Failed to register user on blockchain.");
-    }
+    // if (!blockchainResult) {
+    //     await User.deleteOne({ _id: savedUser._id });
+    //     await Donor.deleteOne({ _id: savedDonor._id });
+    //     throw new Error("Failed to register user on blockchain.");
+    // }
 
     const token = generateToken({ userId: savedUser._id, roles: savedUser.roles });
 

@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const NGO = require("../models/NGO");
-const blockchainService = require("../services/blockchain");
+// const blockchainService = require("../services/blockchain");
 const { config } = require('../config/config')
 const cloudinary = require('cloudinary').v2;
 
@@ -81,9 +81,22 @@ async function getNGODocs(userHash) {
   return { documents: ngo.documents };
 }
 
+// async function listVerifiedNGOs() {
+//   try {
+//     const ngos = await blockchainService.listVerifiedNGOs();
+//     return ngos; 
+//   } catch (error) {
+//     throw new Error(`Failed to list verified NGOs: ${error.message}`);
+//   }
+// }
+
 async function listVerifiedNGOs() {
   try {
-    const ngos = await blockchainService.listVerifiedNGOs();
+    const ngos = await User.find({
+      verificationStatus: 'verified', 
+      roles: { $in: ['ngo'] }     
+    }).exec();
+
     return ngos; 
   } catch (error) {
     throw new Error(`Failed to list verified NGOs: ${error.message}`);

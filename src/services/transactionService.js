@@ -1,6 +1,6 @@
 const Transaction = require("../models/Transaction");
 const Proposal = require("../models/Proposal");
-const BlockchainService = require("../services/blockchain");
+// const BlockchainService = require("../services/blockchain");
 const Donor = require("../models/Donor");
 const { v4: uuidv4 } = require("uuid");
 
@@ -28,14 +28,14 @@ const createDonation = async (donorId, proposalId, amount) => {
       });
       await transaction.save();
   
-      const transactionHash = await BlockchainService.storeDonation({
-        donorId,
-        proposalId,
-        amount,
-        transactionId: transaction._id.toString(),
-      });
+      // const transactionHash = await BlockchainService.storeDonation({
+      //   donorId,
+      //   proposalId,
+      //   amount,
+      //   transactionId: transaction._id.toString(),
+      // });
   
-      transaction.transactionHash = transactionHash;
+      // transaction.transactionHash = transactionHash;
       transaction.status = "Completed"; 
       await transaction.save();
   
@@ -45,7 +45,7 @@ const createDonation = async (donorId, proposalId, amount) => {
       donor.lastDonationDate = new Date();
       await donor.save();
   
-      return { transaction, transactionHash };
+      return { transaction };
     } catch (error) {
       console.error("Error during donation:", error);
   
@@ -102,15 +102,15 @@ const donateToDisaster = async (donorId, disasterId, amount) => {
     await transaction.save();
 
     // Call blockchain service to store disaster donation
-    const transactionHash = await BlockchainService.storeDisasterDonation({
-      donorId,
-      disasterId,
-      amount,
-      transactionId: transaction._id.toString(),
-    });
+    // const transactionHash = await BlockchainService.storeDisasterDonation({
+    //   donorId,
+    //   disasterId,
+    //   amount,
+    //   transactionId: transaction._id.toString(),
+    // });
 
-    // Update transaction with blockchain hash
-    transaction.transactionHash = transactionHash;
+    // // Update transaction with blockchain hash
+    // transaction.transactionHash = transactionHash;
     transaction.status = "Completed";
     await transaction.save();
 
@@ -120,7 +120,7 @@ const donateToDisaster = async (donorId, disasterId, amount) => {
     donor.lastDonationDate = new Date();
     await donor.save();
 
-    return { transaction, transactionHash };
+    return { transaction };
   } catch (error) {
     console.error("Error during disaster donation:", error);
 
@@ -165,18 +165,18 @@ async function releaseFunds(proposalId, milestoneId) {
         if (!milestone) throw new Error("Milestone not found");
 
         // Update Milestone in MongoDB
-        milestone.fundsReleased = true;
+        milestone.isReleased = true;
         await proposal.save({ session });
 
         // Call Blockchain Function to Release Funds
-        const blockchainResponse = await BlockchainService.releaseFunds(proposalId, milestoneId);
-        if (!blockchainResponse) {
-            throw new Error("Blockchain funds release failed");
-        }
+        // const blockchainResponse = await BlockchainService.releaseFunds(proposalId, milestoneId);
+        // if (!blockchainResponse) {
+        //     throw new Error("Blockchain funds release failed");
+        // }
 
-        // Update Proposal with Blockchain Data (if applicable)
-        proposal.blockchainHash = blockchainResponse;
-        await proposal.save({ session });
+        // // Update Proposal with Blockchain Data (if applicable)
+        // proposal.blockchainHash = blockchainResponse;
+        // await proposal.save({ session });
 
         await session.commitTransaction();
         session.endSession();
@@ -204,6 +204,19 @@ async function listTransactions() {
     );
 
     return transactionsWithBlockchainData;
+}
+
+async function listTransactions() {
+  try {
+    // Fetch all transactions from MongoDB and populate donor and proposal fields
+    const transactions = await Transaction.find()
+      .populate('donor')     
+      .exec();
+
+    return transactions.map(transaction => transaction.toObject());
+  } catch (error) {
+    throw new Error(`Failed to list transactions: ${error.message}`);
+  }
 }
 
 module.exports = {

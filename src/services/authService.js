@@ -83,11 +83,11 @@ async function registerUser({ email, password, role, profileData = {}, roleSpeci
     await savedUser.save();
 
     // Register on blockchain
-    const blockchainRole = mapRoleToBlockchain(role);
-    const blockchainResult = await blockchainService.addUser(blockchainHash, blockchainRole);
-    if (!blockchainResult) {
-      throw new Error("Failed to register user on blockchain");
-    }
+    // const blockchainRole = mapRoleToBlockchain(role);
+    // const blockchainResult = await blockchainService.addUser(blockchainHash, blockchainRole);
+    // if (!blockchainResult) {
+    //   throw new Error("Failed to register user on blockchain");
+    // }
 
     // Generate token
     const token = generateToken({ userId: savedUser._id, roles: savedUser.roles });

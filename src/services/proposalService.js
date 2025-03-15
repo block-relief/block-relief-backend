@@ -1,5 +1,5 @@
 const Proposal = require("../models/Proposal");
-const BlockchainService = require("./blockchain");
+// const BlockchainService = require("./blockchain");
 const { generateToken, createSalt } = require('../utils/generateToken_')
 const mongoose = require("mongoose");
 
@@ -32,20 +32,20 @@ async function createProposal(ngoId, title, description, requestedAmount, disast
         await ngo.save({ session });
 
         // Call Blockchain Function
-        const blockchainResponse = await BlockchainService.createProposal(
-            savedProposal._id.toString(), 
-            ngoId,
-            requestedAmount,
-            milestones
-        );
+        // const blockchainResponse = await BlockchainService.createProposal(
+        //     savedProposal._id.toString(), 
+        //     ngoId,
+        //     requestedAmount,
+        //     milestones
+        // );
 
-        if (!blockchainResponse) {
-            throw new Error("Blockchain proposal creation failed");
-        }
+        // if (!blockchainResponse) {
+        //     throw new Error("Blockchain proposal creation failed");
+        // }
 
-        // Store Blockchain Hash
-        savedProposal.blockchainHash = blockchainResponse;
-        await savedProposal.save({ session });
+        // // Store Blockchain Hash
+        // savedProposal.blockchainHash = blockchainResponse;
+        // await savedProposal.save({ session });
 
         await session.commitTransaction();
         session.endSession();
@@ -71,15 +71,15 @@ async function approveProposal(proposalId, adminId) {
         proposal.lastModifiedBy = adminId;
         proposal.modifierModel = "Admin";
 
-        // Call Blockchain Function (if applicable)
-        const blockchainResponse = await BlockchainService.markProposalCompleted(proposalId);
-        if (!blockchainResponse) {
-            throw new Error("Blockchain proposal approval failed");
-        }
+        // // Call Blockchain Function (if applicable)
+        // const blockchainResponse = await BlockchainService.markProposalCompleted(proposalId);
+        // if (!blockchainResponse) {
+        //     throw new Error("Blockchain proposal approval failed");
+        // }
 
-        // Store Blockchain Hash (if applicable)
-        proposal.blockchainHash = blockchainResponse;
-        await proposal.save({ session });
+        // // Store Blockchain Hash (if applicable)
+        // proposal.blockchainHash = blockchainResponse;
+        // await proposal.save({ session });
 
         await session.commitTransaction();
         session.endSession();
@@ -106,15 +106,15 @@ async function rejectProposal(proposalId, adminId) {
         proposal.lastModifiedBy = adminId;
         proposal.modifierModel = "admin";
 
-        // Call Blockchain Function (if applicable)
-        const blockchainResponse = await BlockchainService.withdrawRemainingFunds(proposalId);
-        if (!blockchainResponse) {
-            throw new Error("Blockchain proposal rejection failed");
-        }
+        // // Call Blockchain Function (if applicable)
+        // const blockchainResponse = await BlockchainService.withdrawRemainingFunds(proposalId);
+        // if (!blockchainResponse) {
+        //     throw new Error("Blockchain proposal rejection failed");
+        // }
 
-        // Store Blockchain Hash (if applicable)
-        proposal.blockchainHash = blockchainResponse;
-        await proposal.save({ session });
+        // // Store Blockchain Hash (if applicable)
+        // proposal.blockchainHash = blockchainResponse;
+        // await proposal.save({ session });
 
         await session.commitTransaction();
         session.endSession();
@@ -127,35 +127,65 @@ async function rejectProposal(proposalId, adminId) {
     }
 }
 
+// async function listAllProposals() {
+//     const proposals = await Proposal.find().populate("ngo disaster");
+
+//     // Fetch blockchain data for each proposal
+//     const proposalsWithBlockchainData = await Promise.all(
+//         proposals.map(async (proposal) => {
+//             const blockchainData = await BlockchainService.getProposal(proposal._id.toString());
+//             return {
+//                 ...proposal.toObject(),
+//                 blockchainData
+//             };
+//         })
+//     );
+
+//     return proposalsWithBlockchainData;
+// }
+
 async function listAllProposals() {
-    const proposals = await Proposal.find().populate("ngo disaster");
+    try {
+      const proposals = await Proposal.find()
+        .populate('ngo')       
+        .populate('disaster')  
+        .exec();
+  
+      return proposals.map(proposal => proposal.toObject());
+    } catch (error) {
+      throw new Error(`Failed to list all proposals: ${error.message}`);
+    }
+  }
 
-    // Fetch blockchain data for each proposal
-    const proposalsWithBlockchainData = await Promise.all(
-        proposals.map(async (proposal) => {
-            const blockchainData = await BlockchainService.getProposal(proposal._id.toString());
-            return {
-                ...proposal.toObject(),
-                blockchainData
-            };
-        })
-    );
+// async function getProposal(proposalId) {
+//     const proposal = await Proposal.findById(proposalId).populate("ngo disaster");
+//     if (!proposal) throw new Error("Proposal not found");
 
-    return proposalsWithBlockchainData;
-}
+//     // Fetch blockchain data
+//     const blockchainData = await BlockchainService.getProposal(proposalId);
+
+//     return {
+//         ...proposal.toObject(),
+//         blockchainData
+//     };
+// }
+
 
 async function getProposal(proposalId) {
-    const proposal = await Proposal.findById(proposalId).populate("ngo disaster");
-    if (!proposal) throw new Error("Proposal not found");
+    try {
+      const proposal = await Proposal.findById(proposalId)
+        .populate('ngo')       
+        .populate('disaster')  
+        .exec();
+  
+      if (!proposal) throw new Error("Proposal not found");
+  
+      return proposal.toObject();
+    } catch (error) {
+      throw new Error(`Failed to get proposal: ${error.message}`);
+    }
+  }
 
-    // Fetch blockchain data
-    const blockchainData = await BlockchainService.getProposal(proposalId);
-
-    return {
-        ...proposal.toObject(),
-        blockchainData
-    };
-}
 
 module.exports = {
     createProposal,
