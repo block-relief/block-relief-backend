@@ -1,6 +1,6 @@
 const proposalService = require("../services/proposalService");
 
-exports.createProposal = async (req, res) => {
+async function createProposal (req, res) {
     try {
         const { ngoId, title, description, requestedAmount, disasterId, milestones, breakdown, fundingSource } = req.body;
         const modifierId = req.user._id;
@@ -17,7 +17,7 @@ exports.createProposal = async (req, res) => {
     }
 };
 
-exports.approveProposal = async (req, res) => {
+async function approveProposal (req, res) {
     try {
         const { proposalId } = req.params;
         const adminId = req.user._id;
@@ -29,7 +29,7 @@ exports.approveProposal = async (req, res) => {
     }
 };
 
-exports.rejectProposal = async (req, res) => {
+async function rejectProposal (req, res) {
     try {
         const { proposalId } = req.params;
         const adminId = req.user._id;
@@ -41,7 +41,7 @@ exports.rejectProposal = async (req, res) => {
     }
 };
 
-exports.listAllProposals = async (req, res) => {
+async function listAllProposals (req, res) {
     try {
         const proposals = await proposalService.listAllProposals();
         res.json(proposals);
@@ -50,7 +50,7 @@ exports.listAllProposals = async (req, res) => {
     }
 };
 
-exports.getProposal = async (req, res) => {
+async function getProposal(req, res) {
     try {
         const { proposalId } = req.params;
         const proposal = await proposalService.getProposal(proposalId);
@@ -59,3 +59,22 @@ exports.getProposal = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+async function getTotalDonationsForProposal(req, res) {
+  try {
+    const { proposalId } = req.params;
+    const total = await proposalService.getTotalDonationsForProposal(proposalId);
+    res.status(200).json({ proposalId, total });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = {
+    getTotalDonationsForProposal,
+    getProposal,
+    listAllProposals,
+    rejectProposal,
+    approveProposal,
+    createProposal,
+}

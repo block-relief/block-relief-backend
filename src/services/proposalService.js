@@ -1,6 +1,7 @@
 const Proposal = require("../models/Proposal");
 // const BlockchainService = require("./blockchain");
 const { generateToken, createSalt } = require('../utils/generateToken_')
+const NGO = require("../models/NGO")
 const mongoose = require("mongoose");
 
 async function createProposal(ngoId, title, description, requestedAmount, disasterId, milestones, breakdown, fundingSource, modifierId, modifierModel) {
@@ -186,11 +187,20 @@ async function getProposal(proposalId) {
     }
   }
 
+async function getTotalDonationsForProposal(proposalId) {
+  const proposal = await Proposal.findById(proposalId);
+  if (!proposal) {
+    throw new Error("Proposal not found");
+  }
+  return proposal.totalContributions;
+}
+
 
 module.exports = {
     createProposal,
     approveProposal,
     rejectProposal,
     listAllProposals,
-    getProposal
+    getProposal,
+    getTotalDonationsForProposal,
 };

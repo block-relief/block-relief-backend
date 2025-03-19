@@ -8,5 +8,7 @@ proposalRouter.put("/:proposalId/approve", authenticate(['admin']), proposalCont
 proposalRouter.put("/:proposalId/reject", authenticate(["admin"]), proposalController.rejectProposal);
 proposalRouter.get("/", authenticate(['admin']), proposalController.listAllProposals);
 proposalRouter.get("/:proposalId", proposalController.getProposal);
+proposalRouter.get("/total/:proposalId", authenticate(["donor", "admin"]), proposalController.getTotalDonationsForProposal);
+
 
 module.exports = proposalRouter;

@@ -468,4 +468,70 @@ proposalRouter.get("/", authenticate(['admin']), proposalController.listAllPropo
  */
 proposalRouter.get("/:proposalId", proposalController.getProposal);
 
+/**
+ * @swagger
+ * /proposal/total/{proposalId}:
+ *   get:
+ *     summary: Get total donations for a specific proposal
+ *     description: Fetches the total contributions made to a specific proposal by its ID.
+ *     tags: [Proposals]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: proposalId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the proposal to fetch total donations for.
+ *         example: "64f1a2b3c4d5e6f7a8b9c0d2"
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved total donations for the proposal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalContributions:
+ *                   type: number
+ *                   description: Total amount of contributions made to the proposal
+ *                   example: 50000
+ *       401:
+ *         description: Unauthorized - Invalid or missing authentication token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
+ *       404:
+ *         description: Proposal not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Proposal not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to fetch total donations for the proposal"
+ */
+proposalRouter.get(
+    "/total/:proposalId",
+    authenticate(["donor", "admin"]),
+    proposalController.getTotalDonationsForProposal
+  );
+
 module.exports = proposalRouter;

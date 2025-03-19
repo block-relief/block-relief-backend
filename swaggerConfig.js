@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: config.BASEURL || "http://localhost:5000/",
+        url: config.BASEURL || "https://block-relief-backend.onrender.com/",
         description: 'Development server',
       },
     ],

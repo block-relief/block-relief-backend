@@ -1,56 +1,63 @@
-const bcrypt = require("bcryptjs");
+const mongoose = require('mongoose')
 const User = require("../models/User");
 const Donor = require("../models/Donor");
-const { generateToken, createSalt } = require('../utils/generateToken_');
-const { mapRoleToBlockchain } = require('../utils/mapRoles');
-// const blockchainService = require('./blockchain');
+const Transaction = require('../models/Transaction')
 
 
-async function registerDonor(email, password, profile, paymentMethods) {
-    if (await User.findOne({ email })) {
-        throw new Error("Email is already registered.");
+async function getDonorDonationDetails(donorId) {
+    try {
+      if (!mongoose.Types.ObjectId.isValid(donorId)) {
+        throw new Error("Invalid donorId format");
+      }
+  
+      const user = await User.findById(donorId).select("profile.name");
+      if (!user || !user.profile || !user.profile.name) {
+        throw new Error("User not found or name unavailable");
+      }
+  
+      const donor = await Donor.findOne({ userId: donorId });
+      if (!donor) {
+        throw new Error("Donor record not found for this user");
+      }
+  
+      const transactions = await Transaction.find({
+        donor: donorId, 
+        status: "Completed",
+      })
+        .populate("proposal", "title")
+        .populate("disaster", "name");
+  
+      if (!transactions.length) {
+        return {
+          donorName: user.profile.name,
+          donations: [],
+        };
+      }
+  
+      const totalDonations = transactions.reduce(
+        (total, transaction) => total + transaction.amount,
+        0
+      );
+
+      const donations = transactions.map((transaction) => ({
+        amountDonated: transaction.amount,
+        proposalDonatedTo: transaction.proposal ? transaction.proposal.title : null,
+        disasterDonatedTo: transaction.disaster ? transaction.disaster.name : null,
+        transactionDate: transaction.updatedAt || transaction.createdAt,
+        currency: transaction.currency,
+      }));
+  
+      return {
+        donorName: user.profile.name,
+        donations,
+        totalDonations,
+      };
+    } catch (error) {
+      console.error("Error fetching donor donation details:", error.message);
+      throw new Error("Failed to fetch donor donation details: " + error.message);
     }
+  }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const userHash = createSalt(email)
-
-    // Create the user in MongoDB
-    const user = new User({
-        email,
-        password: hashedPassword,
-        roles: ["donor"],
-        profile,
-        blockchainHash: userHash
-    });
-
-    const savedUser = await user.save();
-
-    // Create the donor profile in MongoDB
-    const donor = new Donor({
-        userId: savedUser._id,
-        paymentMethods
-    });
-
-    const savedDonor = await donor.save();
-
-    // Link the donor profile to the user
-    savedUser.linkedProfile = savedDonor._id;
-    await savedUser.save();
-
-    // Register the user on the blockchain
-    const blockchainRole = mapRoleToBlockchain("donor");
-    // const blockchainResult = await blockchainService.addUser(userHash, blockchainRole);
-
-    // if (!blockchainResult) {
-    //     await User.deleteOne({ _id: savedUser._id });
-    //     await Donor.deleteOne({ _id: savedDonor._id });
-    //     throw new Error("Failed to register user on blockchain.");
-    // }
-
-    const token = generateToken({ userId: savedUser._id, roles: savedUser.roles });
-
-    return { user: savedUser, token };
-}
-
-module.exports = { registerDonor };
+module.exports = {
+     getDonorDonationDetails,
+    };

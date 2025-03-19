@@ -43,6 +43,16 @@ const TransactionSchema = new mongoose.Schema({
   reference: {
     type: String, // Internal reference number
     unique: true,
+    sparse: true,
+  },
+  paymentrovider: {
+    type: String, enum: ["Paystack", "MockCrypto"],
+    default: "MockCrypto"
+  },
+  paymentStatus: {
+    type: String,
+    enum: ["Initiated", "Pending", "Completed", "Failed"],
+    default: "Initiated"
   },
   createdAt: {
     type: Date,

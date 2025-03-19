@@ -47,4 +47,22 @@ async function getProposalsByDisaster(req, res) {
   }
 }
 
-module.exports = { reportDisaster, listAllDisasters, getDisaster, getProposalsByDisaster };
+async function getTotalDonationsForDisaster(req, res) {
+  try {
+    const { disasterId } = req.params;
+    const total = await disasterService.getTotalDonationsForDisaster(disasterId);
+    res.status(200).json({ disasterId, total });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+
+module.exports = { 
+  reportDisaster, 
+  listAllDisasters, 
+  getDisaster, 
+  getProposalsByDisaster,
+  getTotalDonationsForDisaster,
+};

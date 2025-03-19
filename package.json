@@ -15,6 +15,7 @@
     "@dfinity/agent": "^2.3.0",
     "@dfinity/candid": "^2.3.0",
     "@dfinity/identity": "^2.3.0",
+    "axios": "^1.8.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "buffer": "^6.0.3",

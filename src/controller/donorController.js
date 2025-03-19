@@ -1,15 +1,17 @@
-const authService = require("../services/DonorServices");
+const donorService = require("../services/DonorServices")
 
-async function donorSignUp(req, res) {
+
+async function getDonorDonations(req, res)  {
     try {
-        const { email, password, profile, paymentMethods } = req.body;
-        const result = await authService.registerDonor(email, password, profile, paymentMethods);
-        res.status(201).json(result);
+      const donorId = req.user.userId;
+      const donationDetails = await donorService.getDonorDonationDetails(donorId);
+      res.status(200).json(donationDetails);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+      console.error("Error in donor donations endpoint:", error.message);
+      res.status(500).json({ error: "Failed to fetch donor donation details: " + error.message });
     }
-}
+  };
 
 module.exports = {
-    donorSignUp
+    getDonorDonations,
 }

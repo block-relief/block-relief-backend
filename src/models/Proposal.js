@@ -32,6 +32,15 @@ const ProposalSchema = new mongoose.Schema({
   blockchainHash: { type: String },
   createdAt: { type: Date, default: Date.now },
   thumbnail: {type: String}, 
+  totalContributions: { type: Number, default: 0 },
+  contributions: [
+    {
+      transactionId: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction" },
+      donorId: { type: mongoose.Schema.Types.ObjectId, ref: "Donor" },
+      amount: { type: Number, required: true },
+      date: { type: Date, default: Date.now },
+    },
+  ],
   updatedAt: { type: Date },
   lastModifiedBy: {
     type: mongoose.Schema.Types.ObjectId,

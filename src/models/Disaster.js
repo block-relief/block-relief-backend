@@ -16,6 +16,15 @@ const DisasterSchema = new mongoose.Schema({
   externalSource: { name: String, url: String }, 
   totalEstimatedDamage: { type: Number, default: 0 }, 
   totalVerifiedDamage: { type: Number, default: 0 }, 
+  totalContributions: { type: Number, default: 0 },
+  contributions: [
+    {
+      transactionId: { type: mongoose.Schema.Types.ObjectId, ref: "Transaction" },
+      donorId: { type: mongoose.Schema.Types.ObjectId, ref: "Donor" },
+      amount: { type: Number, required: true },
+      date: { type: Date, default: Date.now },
+    },
+  ],
   damageReports: [{ name: String, ipfsCID: String, uploadedAt: Date }], 
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date },

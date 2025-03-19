@@ -7,5 +7,6 @@ disasterRouter.post("/", authenticate(["ngo", "admin"]), disasterController.repo
 disasterRouter.get("/", disasterController.listAllDisasters);
 disasterRouter.get("/:disasterId", disasterController.getDisaster);
 disasterRouter.get("/:disasterId/proposals", disasterController.getProposalsByDisaster)
+disasterRouter.get("/total/:disasterId", authenticate(["donor", "admin"]), disasterController.getTotalDonationsForDisaster);
 
 module.exports = disasterRouter;

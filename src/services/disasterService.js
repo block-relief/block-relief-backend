@@ -84,4 +84,18 @@ async function getProposalByDisaster(disasterId) {
   return proposals
 }
 
-module.exports = { reportDisaster, listAllDisasters, getDisaster, getProposalByDisaster };
+async function getTotalDonationsForDisaster(disasterId) {
+  const disaster = await Disaster.findById(disasterId);
+  if (!disaster) {
+    throw new Error("Disaster not found");
+  }
+  return disaster.totalContributions;
+}
+
+module.exports = { 
+  reportDisaster, 
+  listAllDisasters, 
+  getDisaster, 
+  getProposalByDisaster,
+  getTotalDonationsForDisaster,
+};

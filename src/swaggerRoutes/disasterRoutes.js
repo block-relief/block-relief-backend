@@ -274,4 +274,69 @@ disasterRouter.get("/:disasterId", disasterController.getDisaster);
  */
 disasterRouter.get("/:disasterId/proposals", disasterController.getProposalsByDisaster);
 
+/**
+ * @swagger
+ * /disaster/total/{disasterId}:
+ *   get:
+ *     summary: Get total donations for a specific disaster
+ *     description: Fetches the total contributions made to a specific disaster by its ID.
+ *     tags: [Disasters]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: disasterId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the disaster to fetch total donations for.
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved total donations for the disaster
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalContributions:
+ *                   type: number
+ *                   description: Total amount of contributions made to the disaster
+ *                   example: 50000
+ *       401:
+ *         description: Unauthorized - Invalid or missing authentication token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized"
+ *       404:
+ *         description: Disaster not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Disaster not found"
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Failed to fetch total donations for the disaster"
+ */
+disasterRouter.get(
+    "/total/:disasterId",
+    authenticate(["donor", "admin"]),
+    disasterController.getTotalDonationsForDisaster
+  );
+
 module.exports = disasterRouter;

@@ -1,8 +1,10 @@
 const express = require("express");
-const { donorSignUp } = require("../controller/authController");
+const donorController = require("../controller/donorController")
+const authenticate  = require("../middleware/jwt")
 
 const donorRouter = express.Router();
 
-donorRouter.post("/donor/signup", donorSignUp);
+donorRouter.get("/donations", authenticate(["donor"]), donorController.getDonorDonations);
+
 
 module.exports = donorRouter;

@@ -1,7 +1,7 @@
 const transactionService = require("../services/transactionService");
 
 
-exports.createDonation = async (req, res) => {
+async function createDonation(req, res) {
   try {
     const { donorId, proposalId, amount } = req.body;
 
@@ -27,7 +27,7 @@ exports.createDonation = async (req, res) => {
 };
 
 
-exports.donateToDisaster = async (req, res) => {
+async function donateToDisaster(req, res) {
   try {
     const { donorId, disasterId, amount } = req.body;
 
@@ -53,7 +53,7 @@ exports.donateToDisaster = async (req, res) => {
 };
 
 
-exports.listTransactions = async (req, res) => {
+async function listTransactions(req, res) {
     try {
         const transactions = await transactionService.listTransactions();
         res.json(transactions);
@@ -63,7 +63,7 @@ exports.listTransactions = async (req, res) => {
 };
 
 
-exports.releaseFunds = async (req, res) => {
+async function releaseFunds(req, res) {
     try {
         const { proposalId, milestoneId } = req.body;
 
@@ -76,3 +76,57 @@ exports.releaseFunds = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+async function donateToProposalFiat(req, res) {
+  try {
+    const { proposalId, amount, email } = req.body;
+    const donorId = req.user.userId; 
+    const { transaction, response } = await transactionService.donateToProposalFiat({
+      donorId,
+      proposalId,
+      amount,
+      email,
+    });
+    res.status(201).json({ transaction, response });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+async function donateToDisasterFiat(req, res) {
+  try {
+    const { disasterId, amount, email } = req.body;
+    const donorId = req.user.userId;
+    const { transaction, response } = await transactionService.donateToDisasterFiat({
+      donorId,
+      disasterId,
+      amount,
+      email,
+    });
+    res.status(201).json({ transaction, response });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+async function verifyPayment(req, res) {
+  try {
+    const { reference } = req.body; // Or from webhook
+    const transaction = await transactionService.verifyPayment(reference);
+    res.status(200).json(transaction);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+
+module.exports = {
+  donateToProposalFiat,
+  donateToDisasterFiat,
+  verifyPayment,
+  releaseFunds,
+  listTransactions,
+  donateToDisaster,
+  createDonation
+}
