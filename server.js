@@ -14,6 +14,7 @@ const proposalRouter = require('./src/routes/proposalRoutes')
 const disasterRouter = require('./src/routes/disaster')
 const donorRouter = require('./src/routes/donorRoutes')
 const { config } = require('./src/config/config')
+const aidRequestRouter = require('./src/routes/aidRequestRoutes')
 
 dotenv.config()
 
@@ -38,6 +39,7 @@ app.use('/transaction', transactionRouter)
 app.use('/proposal', proposalRouter)
 app.use('/disaster', disasterRouter)
 app.use('/donor', donorRouter)
+app.use('/aidRequest', aidRequestRouter)
 
 database()
 
