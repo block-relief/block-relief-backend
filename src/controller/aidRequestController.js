@@ -9,7 +9,8 @@ async function requestAid(req, res) {
     try{
       const { items, description, estimatedCost, evidence, location, urgency, requestHash, requesterType } = req.body; //We extract aid request data from the request body
   
-      const createdBy = req.user._id //this variable is to hold the id of the user requesting the aid, gotten from the authenticated user's data
+      const createdBy = req.payload.userId //this variable is to hold the id of the user requesting the aid, gotten from the authenticated user's data
+      // const createdBy = req.user._id //this variable is to hold the id of the user requesting the aid, gotten from the authenticated user's data
   
       // Determine beneficiary or NGO based on requesterType
       let requestedBy;
@@ -18,13 +19,13 @@ async function requestAid(req, res) {
         if (!beneficiary) { //this is when the user is not a beneficiary
             return res.status(400).json({ error: "Beneficiary not found for the logged in user." }); //we return an error to suggest that the user is not a beneficiary
         }
-        requestedBy = beneficiary._id; //Once we establish that the user is indeed a beneficiary, we assign the his/her beneficiary id to the requestedBy variable
+        requestedBy = beneficiary.userId; //Once we establish that the user is indeed a beneficiary, we assign the his/her beneficiary id to the requestedBy variable
       } else if (requesterType === 'NGO') { //Now this is the other side. Meaning the requesterType is an NGO 
         const ngo = await NGO.findOne({ user: createdBy }); //We establish the NGO status by verifying the user is truly an NGO through entering the NGO collection and finding if the user indeed has a profile in the NGO collection and then assign it to the ngo variable
         if (!ngo) { 
             return res.status(400).json({ error: "NGO not found for the logged in user." }); //we return a response containing an error to suggest the user has not been found to be an NGO
         }
-        requestedBy = ngo._id; //we assign the user's ngo id to the requestedBy variable once we establish that the user is indeed an NGO
+        requestedBy = ngo.userId; //we assign the user's ngo id to the requestedBy variable once we establish that the user is indeed an NGO
   
         // Find the user that created the aid request. Although we have done some verification already using createdBy which relies on middleware authentication, we verify if the user exists in the database for best practices and extra security reasons
         const user = await User.findById(createdBy);
@@ -63,7 +64,7 @@ async function requestAid(req, res) {
 
   async function getAllAidRequests(req, res) {
     try {
-        if (req.user.role !== 'admin') { //over here we assume we're using an authentication middleware that verifies the role of the current user
+        if (req.payload.roles !== 'admin') { //over here we assume we're using an authentication middleware that verifies the role of the current user
             return res.status(403).json({ error: "Unauthorized: Admin access required." });
         }
         const aidRequests = await AidRequest.find(); //over here we query the database for all instances of aidRequest
